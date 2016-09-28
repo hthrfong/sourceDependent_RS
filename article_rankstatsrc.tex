@@ -6,6 +6,9 @@
 \usepackage{subfigure}
 \usepackage[squaren]{SIunits}
 \usepackage[usenames]{color}
+\usepackage{tikz, tkz-euclide, tikz-3dplot}
+\usepackage{comment}
+
 
 \newcommand{\FIXME}[1]{\textcolor{red}{\textbf{#1}}}
 
@@ -35,6 +38,8 @@
 
 \addunit{\annum}{a}
 \addunit{\parsec}{pc}
+%\usetkzobj{all}
+\usetikzlibrary{shadings, intersections,3d,calc}
 
 \DeclareMathOperator{\order}{O}
 
@@ -45,7 +50,7 @@
 % TITLE, AUTHOR
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title{Source-dependent likelihood-ratio detection statistic for compact binary coalescence candidates}
+\title{Source-dependent likelihood-ratio ranking statistic for compact binary coalescence candidates}
 
 \author{Heather Fong}
 \email{heather.fong@ligo.org}
@@ -55,6 +60,10 @@
 \author{Kipp Cannon}
 \email{kipp.cannon@ligo.org}
 \affiliation{RESCEU, University of Tokyo, Tokyo, 113-0033, Japan}
+
+\author{Chris Pankow}
+\email{chris.pankow@ligo.org}
+\affiliation{Department of Physics, Northwestern University, Milwaukee, WI, 53201, USA}
 
 \author{Other authors}
 \email{authors@email.com}
@@ -94,35 +103,26 @@ Abstract goes here.
 
 %%%%%%%%%%%%%%%%%%%%%%
 
-\FIXME{Comments for Kipp (Hi, Kipp!):
-\begin{itemize}
-\item{Should we change 'ranking statistic' to 'detection statistic' to match the CBC paper?}
-\item{I can't get bibtex to work for some reason, so suggestions of citations are labelled in red (I get a 'Warning--jnrlst (dependency: not reversed) set 1
-merlin.mbs apsrev4-1.bst 2010-07-25 4.21a (PWD, AO, DPC) hacked' warning when I run bibtex).}
-\item{What BBH probability distribution function should we use, so we can show both BNS and BBH results of the template weighting?}
-\item{I gave a stab at describing $P(\vec\theta|\text{noise})$ (below Equation \ref{eqn:L_theta}), but I think I've said incorrect things.}
-\end{itemize}}
-
 \section{Introduction}
 
-The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \FIXME{[GW150914, GW151226, O1 papers]} have propelled us into the age of gravitational-wave astronomy. Additional gravitational-wave observatories are also expected to come online in in the next several years. With further observation runs scheduled and additional improvements planned for the current LIGO detectors, the rate at which gravitational waves from compact binary coalescences are observed is expected to increase \FIXME{[rates paper]}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
+The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \cite{Abbott:2016blz, Abbott:2016nmj, TheLIGOScientific:2016pea} have propelled us into the age of gravitational-wave astronomy. Additional gravitational-wave observatories are also expected to come online in in the next several years. With further observation runs scheduled and additional improvements planned for the current LIGO detectors \cite{TheLIGOScientific:2016agk}, the rate at which gravitational waves from compact binary coalescences are observed is expected to increase \cite{Abbott:2016nhf}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
 
-Searches for gravitational waves from compact binary coalescences use a technique known as matched-filtering, which involves correlating the detector data with template waveforms. The template waveforms comprise a template bank, and model the expected signal of gravitational waves from binary neutron stars, binary black holes, and neutron star-black hole binaries. Candidate events are identified through matched-filtering, and they are assigned a detection statistic that assesses their likelihood of being a gravitational-wave signal. 
+Searches for gravitational waves from compact binary coalescences use a technique known as matched-filtering, which involves time-shifting the detector data with template waveforms to calculate their correlations. The template waveforms comprise a template bank, and model the expected signal of gravitational waves from binary neutron stars (BNS), binary black holes (BBH), and neutron star-black hole (NSBH) binaries. Candidate events are identified through matched-filtering, and they are assigned a ranking statistic that assesses their likelihood of being a gravitational-wave signal. 
 
-In \FIXME{Cannon \textit{et al}} derives a likelihood-ratio detection statistic that expands on previous work by \FIXME{Biwas \textit{et al.}} and \FIXME{Aasi \textit{et al.}} and incorporates a model for the correlations in the signal-to-noise-ratios with which signals will be seen in a network of ground-based antennae. The detection statistic retains an algebraic procedure for mapping detection statistic values to false-alarm probability. The detection statistic derived by Cannon \text{et al.} has been implemented into one of Advanced LIGO's compact binary coalescence gravitational-wave searches.
+In \cite{2015arXiv150404632C}, Cannon {\it et al.} derived a likelihood-ratio ranking statistic that expands on previous work by Biswas {\it et al.} \cite{Biswas:2012tv} and Aasi {\it et al.} \cite{Aasi:2013vna}, incorporating a model for the correlations in the signal-to-noise-ratios with which signals will be seen in a network of ground-based antennae. The ranking statistic retains an algebraic procedure for mapping ranking statistic values to false-alarm probability. The ranking statistic derived in \cite{2015arXiv150404632C} has been implemented into one of Advanced LIGO's compact binary coalescence gravitational-wave search analyses, GstLaL \cite{Cannon:2011vi,Privitera:2013xza,Messick:2016}.
 
-Currently, this likelihood ratio-based detection statistic carries the assumption that gravitational-wave signals are equally likely to be recovered by any waveform template in the template bank. This assumption has been implicitly chosen in past gravitational-wave searches from compact binary coalescences, but carries no astrophysical information from source population models. As a result, compact binary coalescence searches suffer in sensitivity because it assumes an incorrect distribution of compact binaries in the Universe. 
+Currently, the likelihood ratio-based ranking statistic implemented in GstLaL carries the assumption that gravitational-wave signals are equally likely to be recovered by any waveform template in the template bank. This assumption has been implicitly chosen in past gravitational-wave searches from compact binary coalescences in order to maximize the signal-to-noise ratio (SNR) of the signal, but it carries no astrophysical information from source population models. As a result, compact binary coalescence searches suffer in sensitivity because it assumes an incorrect distribution of compact binaries in the Universe. 
 
-This article presents a derivation that folds in astrophysical source population model information into the detection statistic. It will also tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
+This article presents a derivation that folds in astrophysical source population model information into the ranking statistic. It will also tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
 
-In Section \ref{sec:rankingstat}, we begin by describing the detection statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:}, \ref{sec:}, and \ref{sec:}. Finally, in Section \ref{sec:}, we present a discussion of the new detection statistic, and conclude in Section \ref{sec:}.
+In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j}, \ref{sec:P_k}, and \ref{sec:P_jk}. Finally, in Section \ref{sec:}, we present a discussion of the new ranking statistic, and conclude in Section \ref{sec:conclusion}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Likelihood-ratio detection statistic} \label{sec:rankingstat}
+\section{Likelihood-ratio ranking statistic} \label{sec:rankingstat}
 
-The detection statistic employed in one of Advanced LIGO's compact binary coalescence searches is the likelihood ratio, which is an effective way to rank signals because of the known mapping between the detection statistic value and false-alarm probability. The likelihood-ratio detection statistic is given as the following (adapted from Eq. 1 of \FIXME{[arXiv:1504.04632]}):
+The ranking statistic employed in one of Advanced LIGO's compact binary coalescence searches, GstLaL, is the likelihood ratio, which is an effective way to rank signals because of the known mapping between the ranking statistic value and false-alarm probability. The likelihood-ratio ranking statistic is given as the following (adapted from Eq. 1 of \cite{2015arXiv150404632C}):
 	\begin{widetext}
 	\begin{multline}
 	\label{eqn:LR}
@@ -130,17 +130,15 @@ The detection statistic employed in one of Advanced LIGO's compact binary coales
 	= \mathcal{L}(...| \vec{\theta}) \mathcal{L}(\vec{\theta}) = \frac{P(\{D_{H_{H1}}, D_{H_{L1}}, ...\}, \{H1, L1, ...\}, \rho_{H1}, \chi^2_{H1}, \rho_{L1}, \chi^2_{L1}, ... | \vec{\theta}, \text{signal})}{P(\{D_{H_{H1}}, D_{H_{L1}}, ...\}, \{H1, L1, ...\}, \rho_{H1}, \chi^2_{H1}, \rho_{L1}, \chi^2_{L1}, ... | \vec{\theta}, \text{noise})} \mathcal{L}(\vec{\theta}), 
 	\end{multline}
 	\end{widetext}
-where $\{D_{H_{H1}}, D_{H_{L1}}, ...\}$ is the set of horizon distances for all instruments in the network at the time of the observed event, $\{H1, L1, ...\}$ is the set of instruments that observed the event, $\rho$ and $\chi^2$ are the template matched-filter signal-to-noise ratios (SNRs) and $\chi^2$ values for the candidate in those instruments, and $\vec{\theta}$ are the intrinsic parameters of the template. The first term in Eq. \ref{eqn:LR} is worked out in detail in \FIXME{[arXiv:1504.04632]}.
+where $\{D_{H_{H1}}, D_{H_{L1}}, ...\}$ is the set of horizon distances for all instruments in the network at the time of the observed event, $\{H1, L1, ...\}$ is the set of instruments that observed the event, $\rho$ and $\chi^2$ are the template matched-filter signal-to-noise ratios (SNRs) and $\chi^2$ values for the candidate in those instruments, and $\vec{\theta}$ are the intrinsic parameters of the template. The first term in Eq. \ref{eqn:LR} is worked out in detail in \cite{2015arXiv150404632C}.
 
 The second term in the equation, $\mathcal{L}(\vec{\theta})$, is also a fraction:
 	\begin{equation}
 	\mathcal{L}(\vec{\theta}) = \frac{P(\vec{\theta}|\text{signal})}{P(\vec{\theta}|\text{noise})}.
 	\label{eqn:L_theta}
 	\end{equation}
-\FIXME{The denominator, $P(\vec{\theta}|\text{noise})$, is the probability of recovering a template waveform with parameters $\vec{\theta}$ given that there is no signal in the data. The mean rate for a template waveform of detector is measured by counting the number of triggers collected over some large interval of time. Coincidences are computed by determining whether triggers are found within the coincident time window of the different detectors, and this information is used to calculate the mean rate of coincidences. $P(\vec{\theta}|\text{noise})$ is then obtained by dividing that rate by the sum of all those rates for all $\vec\theta$.} 
-$P(\vec{\theta}|\text{signal})$ is the probability that a template waveform with parameters $\vec{\theta}$ is recovered as the best-match template waveform, given that there is a signal in the data. Currently, $P(\vec{\theta}|\text{signal})$ is chosen to be uniform in the waveform space comprising the template bank, such that all templates are equally likely in the signal population. However, because the spacing between template waveforms is determined by the noise spectrum of the detectors rather than the physical properties of the sources, this prior does not contain astrophysically meaningful quantities. 
-
-In the following sections, we derive a new expression for $P(\vec{\theta}|\text{signal})$ such that it incorporates astrophysical priors into the template weighting. This calculation allows us to then develop a likelihood-ratio detection statistic that incorporates our choice of astrophysical source population model. 
+The denominator, $P(\vec{\theta}|\text{noise})$, is the probability of recovering a template waveform with parameters $\vec{\theta}$ given that there is no signal in the data. The mean rate for a template waveform of detector is measured by counting the number of triggers collected over some large interval of time. Coincidences are computed by determining whether triggers are found within the coincident time window of the different detectors, and this information is used to calculate the mean rate of coincidences. $P(\vec{\theta}|\text{noise})$ is then obtained by dividing that rate by the sum of all those rates for all $\vec\theta$. 
+$P(\vec{\theta}|\text{signal})$ is the probability that a template waveform with parameters $\vec{\theta}$ is recovered as the best-match template waveform, given that there is a signal in the data. Currently, $P(\vec{\theta}|\text{signal})$ is chosen to be uniform in the waveform space comprising the template bank, such that all templates are equally likely in the signal population. However, because the spacing between template waveforms is determined by the noise spectrum of the detectors rather than the physical properties of the sources, this prior does not contain astrophysically meaningful quantities. The focus of this article is to derive an analytic expression for $P(\vec{\theta}|\text{signal})$. This calculation allows us to then develop a likelihood-ratio ranking statistic that incorporates our choice of astrophysical source population model and correctly weighs each template waveform according to our chosen population model. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,53 +147,63 @@ In the following sections, we derive a new expression for $P(\vec{\theta}|\text{
 
 We consider a gravitational-wave candidate $\vec{s}$; it belongs to an astrophysical source population $\mathcal{S}$ and has parameters $\vec\theta$:
    \begin{equation}
-   \vec\theta = \{m_1,m_2,\chi,\rho\},
+   \vec\theta = \{m_1,m_2,\chi_1,\chi_2,\rho\},
    \label{eqn:theta}
    \end{equation}
-where $m_1$ and $m_2$ are the source masses, $\chi$ is the effective spin, and $\rho$ is the nominal signal-to-noise ratio (SNR). 
+where $m_i$ and $\chi_i$ are the masses and spins, respectively, of source $i=1,2$ and $\rho$ is the nominal SNR. 
 
-We assume that the waveform template bank is densely populated such that the candidate can be described by a template $\vec{t}_j$ in the bank multiplied by some SNR $\rho$. Therefore, the candidate is expressed as $\vec{s}(\vec\theta)=\rho\vec{t}_j(\vec\theta)$. The candidate also contains noise $\vec{n}$, which is assumed to be stationary Gaussian noise. To simplify the notation, the dependency on $\vec{\theta}$ is implied from this point on. 
+We assume that the waveform template bank is densely populated such that the candidate can be described by a template $\vec{t}_j$ in the bank multiplied by $\rho$. Therefore, the candidate is expressed as $\vec{s}(\vec\theta)=\rho\vec{t}_j(\vec\theta)$. The candidate also contains noise $\vec{n}$, which is assumed to be stationary Gaussian noise. To simplify the notation, the dependency on $\vec{\theta}$ is implied from this point on. 
+
+%COORDINATE SYSTEM DRAWING
+\begin{figure}
+\input{unitsphere_figure.tex}
+\caption{Waveform space in which waveform templates lie on the unit sphere. $\vec{t}_j$ denotes the template waveform that recovers the signal $\vec{s}$ in the absence of noise $\vec{n}$ ($\vec{s}=\rho\vec{t}_j$), while $\vec{t}_k$ denotes the template waveform that recovers the signal with the addition of noise ($\vec{d}=\vec{s}+\vec{n}=\rhok\vec{t}_k$). Signals found inside the solid angle $\Delta\Omega$ are recovered by template $\vec{t}_k$, due to the density of the template bank.}
+\label{fig:unitsphere}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%
 
 Given that there is a candidate that is known to look like $\vec{s}=\rho\vec{t}_j$, the probability that a signal from a specified source population is recovered by a template $\vec{t}_k$ is
    \begin{multline}
    \label{eqn:prob_signal}
-   P(\vec{t}_k | \text{signal})\\
+   P(\vec{t}_k | \text{signal},\rho)\\
    = \sum_j \Big\{ P(\vec{t}_j|\text{signal})\times P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j) \Big\},
    \end{multline}
 where $P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j)$ is the probability that template $\vec{t}_k$ is the best match for the candidate. $\vec{t}_k$ is the $k$th template that lies on the unit sphere in waveform space (as shown in Figure \ref{fig:unitsphere}); therefore, $|\vec{t}_k| = 1$. $P(\vec{t}_j|\text{signal})$ is the probability that a signal is described by a template on the unit sphere, and it is given by an astrophysical source model.
-	\begin{figure}
-	\resizebox{0.7\linewidth}{!}{\includegraphics{unitsphere.png}}
-	\caption{Unit sphere.}
-	\label{fig:unitsphere}
-	\end{figure}
+	%\begin{figure}
+	%\resizebox{0.7\linewidth}{!}{\includegraphics{unitsphere.png}}
+	%\caption{Unit sphere.}
+	%\label{fig:unitsphere}
+	%\end{figure}
+	
 From here, we can see there are two parts to this derivation: there is $P(\vec{t}_j|\text{signal})$, which depends only on the source population, and there is $P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j)$, which depends on the signal and the template bank. We will begin with deriving the former.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{$P(\vec{t}_j|\text{signal})$}
+\section{$P(\vec{t}_j|\text{signal})$} \label{sec:P_j}
 
-The first term in the summation of Eq. \ref{eqn:prob_signal} depends on the astrophysical source population model; therefore, a choice must be made for the source population model. In this work, we will consider two models: a binary neutron star (BNS) population and a binary black hole (BBH) population.
+The first term in the summation of Eq. \ref{eqn:prob_signal} depends on the astrophysical source population model; therefore, a choice must be made for the source population model. In this work, we will consider two models: a binary neutron star (BNS) population and a binary black hole (BBH) population. The BNS source population we used is from Ozel {\it et al.} \cite{Ozel:2012ax}, where neutron star masses are centred around 1.33+1.33$M_\odot$ with a dispersion of 0.05$M_\odot$. For the BBH source population, we take a distribution that is centred around 30+30$M_{\odot}$ with a dispersion of 5$M_\odot$. The population models do not consider the spins of the sources.
 
 The probability density function (PDF) of the source population is given as $P(\vec{\gamma})$, where $\vec{\gamma}=\{\gamma_1,\gamma_2,..., \gamma_M\}$ are the intrinsic parameters of the source population, such as the masses and spins. The probability of that a signal looks like $\vec{t}_j$ (multiplied by some $\rho$) is the following:
 	\begin{align}
 	P(\vec{t}_j|\text{signal}) &= \int P_j(\vec{\gamma}) \diff\vec{\gamma} \\
 	&\approx P_j(\gamma_1) P_j(\gamma_2)...P_j(\gamma_M) \times V_j.
 	\end{align}
-In the final equality, we assume that the distribution of the source parameters are independent of one another, so the joint probability is the product of the marginals. $V_j$ is the $M$-dimensional volume of the $j$th region of the Voronoi diagram, and it is assumed that $V_j$ is small enough such that $P_j(\gamma_i)$ is constant along in the patch. We compute this for each template in the template bank to find the probability that a system from the given source population will have the same properties as the template. 
+In the final equality, we assume that the distribution of the source parameters are independent of one another, so the joint probability is the product of the marginals. Because the template bank is made of discrete waveforms, the template bank is turned into a Voronoi diagram, where each template is represented by a Voronoi region.$V_j$ is the $M$-dimensional volume of the $j$th region of the Voronoi diagram, computed using Delaunay triangulation, and it is assumed that $V_j$ is small enough such that $P_j(\gamma_i)$ is constant within the patch. We compute $P(\vec{t}_j|\text{signal})$ for each template in the template bank to find the probability that a system from the given source population will have the same properties as the template. Results for both source populations are shown in Figure \ref{fig:p_j}.
 
-The BNS source population we used is from \FIXME{[arXiv: 1309.6635]}, and the results are summarized in Figure~\ref{fig:P_BNS}. We use the BBH source population from \FIXME{[BBH PDF source]}, and the results are summarized in Figure~\ref{fig:P_BBH}.
-
-	\begin{figure}
-	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_Pj_100templates_N3.pdf}}
-	\caption{$P(\vec{t}_j|\text{signal})$ calculated for each template in the bank. Plotted on the figure in solid lines are the mass probability distributions from which the source population follows. Some templates are not included because their calculated areas are far too large, due to the computed Voronoi regions. \FIXME{Placeholder plot.}}
-	\label{fig:P_BNS}
-	\end{figure}
+\begin{figure}
+\resizebox{\linewidth}{!}
+{\includegraphics{logPj_OzelrhoNone.png}}
+\resizebox{\linewidth}{!}
+{\includegraphics{logPj_KiziltanrhoNone.png}}
+\label{fig:p_j}
+\caption{log probability of signal population, i.e. the probability $P_j$ that a signal $t_j$ exists. Only $m_1$ and $m_2$ of the template bank are plotted. We use two different signal populations: BNS (left) and BBH (right). The black solid lines show the mass distribution of the different population models. Note that log$P_j=-\infty$ is not plotted.}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{$P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j)$}
+\section{$P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j)$} \label{sec:P_k}
 
 When a candidate $\vec{s}$ is detected by the instruments, the resulting signal has an additional factor due to noise $\vec{n}$ that is assumed to be stationary and Gaussian-distributed. Therefore, the detected signal $\vec{d}$ is given as the sum of the candidate $\vec{s}$ and the noise $\vec{n}$. We assume that $\vec{d}$ can also be described by a waveform template, denoted as $\vec{t}_k$, multiplied by some observed SNR $\rhok$.
 
@@ -203,16 +211,17 @@ When a candidate $\vec{s}$ is detected by the instruments, the resulting signal 
    \vec{d} &= \vec{n} + \vec{s} \\
    \rhok\vec{t}_k &= \vec{n} + \rho\vec{t}_j,
    \end{align}
-where $\rhok$ is the observed SNR. Again, we assume that that signal $\vec{s}$ is described by a template $\vec{t}_j$ in the bank. We also assume that template $\vec{t}_k$ is the best-fitting template to the detected signal $\vec{d}$. $|\vec{n}|^2$ then becomes 
-   \begin{align}
-   |\vec{n}|^2 &= (\rhok\vec{t}_k - \rho\vec{t}_j) \cdot (\rhok\vec{t}_k - \rho\vec{t}_j)\\
-               &= \rho^2 + \rhok^2 - 2\rhok\ptjtk
-   \label{eqn:n_squaredmagnitude}
-   \end{align}
-Because $\vec{n}$ is assumed to follow a Gaussian distribution with a constant variance of 1, the probability density function for $N$ dimensions is given as
+where $\rhok$ is the observed SNR, and is different from the nominal or intrinsic SNR $\rho$. Again, we assume that that signal $\vec{s}$ is described by a template $\vec{t}_j$ in the bank. We also assume that template $\vec{t}_k$ is the best-fitting template to the detected signal $\vec{d}$. Because $\vec{n}$ is assumed to follow a Gaussian distribution with a constant variance of 1, the probability density function for $N$ dimensions is given as
    \begin{equation}
    f(\vec{n}) = \frac{1}{(2\pi)^{N/2}}e^{-\frac{1}{2}|\vec{n}|^2}
    \end{equation}
+We can solve for $|\vec{n}|^2$: 
+   \begin{align}
+   |\vec{n}|^2 &= (\rhok\vec{t}_k - \rho\vec{t}_j) \cdot (\rhok\vec{t}_k - \rho\vec{t}_j)\\
+               &= \rho^2 + \rhok^2 - 2\rhok\ptjtk.
+   \label{eqn:n_squaredmagnitude}
+   \end{align}
+
 We want to find the probability that $\vec{d}=\rho\vec{t}_j+\vec{n}$ lies inside the conic volume of some template $\vec{t}_k$ with solid angle $\Delta\Omega$, where $\Delta\Omega$ is determined by the density of the template bank; refer to Fig~\ref{fig:unitsphere}. If $\vec{d}$ is inside the conic volume, it means that it is recovered by that template $\vec{t}_k$.
 
 The probability that any signal is recovered by $\vec{t}_k$ can then be expressed as a ratio of the probability density of one template over the sum of probability densities of all the templates in the bank:
@@ -231,17 +240,23 @@ We deal with the numerator in Eq. \ref{eqn:prob_s_recovered_by_tk} first. Moving
   = \frac{\Delta\Omega}{(2\pi)^{N/2}} e^{-\frac{1}{2}\rho^2(1-(\vec{t}_j\cdot\vec{t}_k)^2)} \int_0^\infty  e^{-\frac{1}{2} (\rhok - \ptjtk)^2  } {\rhok^{N-1}} \diff\rhok
   \label{eqn:P_k02}
    \end{equation}
-For the exponential term, we use the completing the square technique in the first equality of Eq.~\ref{eqn:P_k01} to obtain Eq.~\ref{eqn:P_k02}. Letting $N\!=\!4$ (which is the number of dimensions in $\vec{\theta}$, see Eq. \ref{eqn:theta}), the integrand $I$ in Eq. \ref{eqn:P_k01} becomes
+For the exponential term, we use the completing the square technique in the first equality of Eq.~\ref{eqn:P_k01} to obtain Eq.~\ref{eqn:P_k02}. Letting $N\!=\!5$ (which is the number of dimensions in $\vec{\theta}$, see Eq. \ref{eqn:theta}), the integrand $I$ in Eq. \ref{eqn:P_k01} becomes
 	\begin{multline}
-	 I = \int_0^\infty  e^{-\frac{1}{2} (\rhok - \ptjtk)^2  } {\rhok^{3}} \diff\rhok\\
-	 \hspace{1.5em}= \sqrt{\frac{\pi}{2}}\ptjtk\Big[(\ptjtk)^2+3\Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big]+\\
-	 e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^2+2\Big]
+	% I = \int_0^\infty  e^{-\frac{1}{2} (\rhok - \ptjtk)^2  } {\rhok^{3}} \diff\rhok\\
+	 %\hspace{1.5em}= \sqrt{\frac{\pi}{2}}\ptjtk\Big[(\ptjtk)^2+3\Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big]+\\
+	 %e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^2+2\Big]
+	 I = \int_0^\infty  e^{-\frac{1}{2} (\rhok - \ptjtk)^2  } {\rhok^{4}} \diff\rhok\\
+	     \hspace{1.5em}= \sqrt{\frac{\pi}{2}}\text{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big[(\ptjtk)^4+6(\ptjtk)^2+3\Big]\\
+	      + e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^3+5\ptjtk\Big]
 	 \end{multline}
 Therefore, we obtain the following expression in the numerator:
 	\begin{widetext}
 	\begin{multline}
 	\int_0^\infty \frac{1}{(2\pi)^{2}} e^{-\frac{1}{2} |\vec{n}|^2} {\rho^{3}_{obs,k}} d\rho_{obs,k} \Delta\Omega \\
-	= \frac{\Delta\Omega}{(2\pi)^{2}} e^{-\frac{1}{2}\rho^2} e^{\frac{1}{2}(\ptjtk)^2}\Big\{ \sqrt{\frac{\pi}{2}}\Big[(\ptjtk)^3+3\ptjtk \Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big]+e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^2+2\Big] \Big\}
+	%= \frac{\Delta\Omega}{(2\pi)^{2}} e^{-\frac{1}{2}\rho^2} e^{\frac{1}{2}(\ptjtk)^2}\Big\{ \sqrt{\frac{\pi}{2}}\Big[(\ptjtk)^3+3\ptjtk \Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big]+e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^2+2\Big] \Big\}
+	= \frac{\Delta\Omega}{(2\pi)^{2}} e^{-\frac{1}{2}\rho^2} e^{\frac{1}{2}(\ptjtk)^2}\Big\{ \sqrt{\frac{\pi}{2}}\text{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big[(\ptjtk)^4+6(\ptjtk)^2+3\Big]
+	      + e^{-\frac{1}{2}(\ptjtk)^2}\Big[(\ptjtk)^3+5\ptjtk\Big]
+	 \Big\}
 	\end{multline}
 	\end{widetext}
 The denominator is calculated in the same way. When we compute the full probability from Eq.~\ref{eqn:prob_s_recovered_by_tk}, the factor $\frac{\Delta\Omega}{(2\pi)^{2}} e^{-\frac{1}{2}\rho^2}$ appears in both numerator and denominator, and thus, cancel out. Therefore, the final probability becomes the following:
@@ -250,9 +265,13 @@ The denominator is calculated in the same way. When we compute the full probabil
 	P(\text{candidate in }\vec{t}_k|\vec{s}=\rho\vec{t}_j) =\\
 	\frac{
 	e^{\frac{1}{2}\rho^2\tjtk^2}
-	\sqrt{\frac{\pi}{2}}\Big[(\ptjtk)^3+3\ptjtk \Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big]+(\ptjtk)^2+2
+	\sqrt{\frac{\pi}{2}}\text{erf}\Big(\frac{\ptjtk}{\sqrt{2}}\Big)\Big[(\ptjtk)^4+6(\ptjtk)^2+3\Big]
+	      + (\ptjtk)^3+5\ptjtk
 	}{
-	{\sum_{\vec{t}_{k'}} \Big\{e^{\frac{1}{2}\rho^2\tjtkk^2} \sqrt{\frac{\pi}{2}}\Big[(\ptjtkk)^3+3\ptjtkk\Big]\Big[1+\mathrm{erf}\Big(\frac{\ptjtkk}{\sqrt{2}}\Big)\Big]+(\ptjtkk)^2+2\Big\}
+	{\sum_{\vec{t}_{k'}} \Big\{e^{\frac{1}{2}\rho^2\tjtkk^2} 
+	\sqrt{\frac{\pi}{2}}\text{erf}\Big(\frac{\ptjtkk}{\sqrt{2}}\Big)\Big[(\ptjtkk)^4+6(\ptjtkk)^2+3\Big]
+	      + (\ptjtkk)^3+5\ptjtkk
+	\Big\}
 	}}
 	\label{eqn:p_k}
 	\end{multline}
@@ -261,23 +280,37 @@ The denominator is calculated in the same way. When we compute the full probabil
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{$P(\vec{t}_k | \text{signal})$}
+\section{$P(\vec{t}_k | \text{signal})$} \label{sec:P_jk}
 
-\FIXME{Results need to be updated}
+\FIXME{Replace Kiziltan plots with BBH}
 
-Now that we have derived all components, we can calculate the probability that any signal in our source population is recoverable by a particular template; that is, $P(\vec{t}_k | \text{signal})$ from Eq.~\ref{eqn:prob_massbin}.
+Now that we have derived all components, we can calculate the probability that any signal in our source population is recoverable by a particular template; that is, $P(\vec{t}_k | \text{signal})$ from Eq.~\ref{eqn:prob_signal}.
 
+In this study, we use the same template bank used by data analysis pipelines during Advanced LIGO's first observation run \cite{TheLIGOScientific:2016pea}. The template bank covers a four-dimensional parameter space ($m_1$,$m_2$,$\chi_1$,$\chi_2$) and is comprised of $\sim\!250,000$ templates. To see the parameter space covered by this template bank, see Fig. 2 of \cite{TheLIGOScientific:2016pea}.
+
+The probabilities currently computed are a function of $\rho$: $P(\text{a signal is recovered by template }j|\rho)$. With a distribution of $\rho$, we can calculate:
+	\begin{equation}
+	P(\vec{t}_k|\text{signal}) = \int_{\rho_{\text{low}}}^{\rho_{\text{high}}} P(\vec{t}_k|\text{signal},\rho) P(\rho) d\rho
+	\end{equation}
+
+We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of 0 SNR sources at infinite distance. As a result, we pick the lowest SNR to be $\rho_{\text{low}}=4$ as this is the trigger threshold for a gravitational-wave search, and we integrate to $\rho_{\text{high}}=\infty$.
+
+The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
+
+To better understand which templates give asymptotically approach a constant value with increasing $\rho$, in Figure~\ref{fig:P_tkj}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population.
+
+\begin{comment}
+	\begin{figure}
+	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_Pj_100templates_N3.pdf}}
+	\caption{$P(\vec{t}_j|\text{signal})$ calculated for each template in the bank. Plotted on the figure in solid lines are the mass probability distributions from which the source population follows. Some templates are not included because their calculated areas are far too large, due to the computed Voronoi regions. \FIXME{Placeholder plot.}}
+	\label{fig:P_BNS}
+	\end{figure}
 	\begin{figure}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_Pvsrho_100templates_N3.pdf}}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_Pvsrho_zoom_100templates_N3.pdf}}
 	\caption{The probability $P$ as a function of $\rho$ for 100 templates in the ``first2years" template bank. Some templates have a local maximum at $10\lesssim \rho\lesssim 5$ before either asymptotically approaching a constant. The right panel is a zoomed-in version of the left panel.}
 	\label{fig:Pvsrho}
 	\end{figure}
-
-In this study, we use the ``first2years" template bank, which consists of $\sim\!5700$ non-spinning templates. %The grey stars in the same figure represent the BNS source population, from which 1000 sources are drawn from the mass probability distribution given by \href{https://arxiv.org/abs/1309.6635}{Kiziltan {\it et al.}, 2013}. Following our assumption that $\vec{s}=\rho\vec{t}_j$, the sources are sampled directly from the template bank.
-We randomly select 100 templates from the template bank to calculate $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$. The probabilities are also calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for the 100 templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant, which indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
-
-To better understand which templates give asymptotically approach a constant value with increasing $\rho$, in Figure~\ref{fig:P_tkj}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population.
 	\begin{figure}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_P_tkj_100templates_2rho_N3.jpg}}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_P_tkj_100templates_6rho_N3.jpg}}
@@ -288,28 +321,28 @@ To better understand which templates give asymptotically approach a constant val
 	\caption{100 templates were chosen at random, for which the probabilities $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ of each were calculated; the magnitude of the probability is given by the colour bar. The different plots show the probability calculated for different $\rho$. As $\rho$ is increased, the probability decreases for most templates, indicating that it is unlikely those templates will recover strong signals from our specified population. Some templates have probabilities that remain relatively constant with increasing $\rho$, and these tend to be clustered around the source population. While the colour scale only goes to $10^{-25}$, the probabilities at high $\rho$  go as low as $\sim\!10^{-52}$.}
 	\label{fig:P_tkj}
 	\end{figure}
+\end{comment}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Conclusion}
+\section{Conclusion} \label{sec:conclusion}
 
-\FIXME{Repeat reason as to why we need source-dependent ranking statistic, summarize that we derived the source dependency and implemented it into the ranking statistic. State results of the tests of estimating rates for two different source populations. Outline further work to be done. }
+In order to improve the ranking statistic such that it is more sensitive to source populations, we have presented a derivation that enfolds astrophysical source population model information. The population models can be specified and are shown to work for both BNS and BBH populations. This allows gravitational-wave searches to be tuned towards particular sources. We have shown that the probabilities vary between different source populations. This work also demonstrates that low-SNR and high-SNR populations reveal different mass distributions, which makes it important that the ranking statistic incorporates this information. Further work to be done includes using this source-dependent ranking statistic to estimate the rate of compact binary mergers.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \acknowledgments
 
-Acknowledgements here
-
+To be added.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \appendix
 
 %%%%%%%%%%%%%%%%%%%%%%
-\section{Distance and \ac{SNR}}
+\section{Appendix}
 \label{appendix2}
 
-Appendix goes here
+To be added.
 
 
 %%%%%%%%%%%%%%%%%%%%%%
