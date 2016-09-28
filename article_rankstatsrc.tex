@@ -288,14 +288,40 @@ Now that we have derived all components, we can calculate the probability that a
 
 In this study, we use the same template bank used by data analysis pipelines during Advanced LIGO's first observation run \cite{TheLIGOScientific:2016pea}. The template bank covers a four-dimensional parameter space ($m_1$,$m_2$,$\chi_1$,$\chi_2$) and is comprised of $\sim\!250,000$ templates. To see the parameter space covered by this template bank, see Fig. 2 of \cite{TheLIGOScientific:2016pea}.
 
-The probabilities currently computed are a function of $\rho$: $P(\text{a signal is recovered by template }j|\rho)$. With a distribution of $\rho$, we can calculate:
+The probabilities currently computed are a function of $\rho$: $P(\text{a signal is recovered by template }j|\rho)$. The values of $\rho$ are chosen via Chebyshev nodes, as these are shown to reduce Runge's phenomenon when fitting \cite{numericalmethodsMATLAB}. The Chebyshev nodes in the interval (-1,1) are determined by the following:
+	\begin{equation}
+	x_k = \cos\Big(\frac{2k-1}{2n}\pi\Big), \quad k=1,...,n
+	\end{equation}
+where $n$ is a natural number. 
+
+The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
+
+With a distribution of $\rho$, we can calculate:
 	\begin{equation}
 	P(\vec{t}_k|\text{signal}) = \int_{\rho_{\text{low}}}^{\rho_{\text{high}}} P(\vec{t}_k|\text{signal},\rho) P(\rho) d\rho
 	\end{equation}
 
 We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of 0 SNR sources at infinite distance. As a result, we pick the lowest SNR to be $\rho_{\text{low}}=4$ as this is the trigger threshold for a gravitational-wave search, and we integrate to $\rho_{\text{high}}=\infty$.
 
-The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho0_0.png}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho16_3802850078.png}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho51_2132034356.png}
+\caption{$P(\vec{t}_k|\text{signal},\rho)$ for different values of $\rho$ for the BNS source population. The solid black lines denote the mass distribution of the respective source population model.}
+\end{figure}
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho0_0.png}
+\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho16_3802850078.png}
+\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho51_2132034356.png}
+\caption{$P(\vec{t}_k|\text{signal},\rho)$ for different values of $\rho$ for the BBH source population. The solid black lines denote the mass distribution of the respective source population model.}
+\end{figure}
+
+\begin{figure}
+\includegraphics[width=0.5\textwidth]{lagrangian_fit_Ozel.pdf}
+\includegraphics[width=0.5\textwidth]{lagrangian_fit_Kiziltan.pdf}
+\label{fig:Pvsrho}
+\caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for a few templates (top: BNS, bottom: BBH). Dots are the data points, and solid lines are the functions found fitting Lagrangian polynomials to the data \FIXME{(change to cubic splines)}. The $\rho$ values are found using the Chebychev nodes, with the addition of $\rho=0$.}
+\end{figure}
 
 To better understand which templates give asymptotically approach a constant value with increasing $\rho$, in Figure~\ref{fig:P_tkj}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population.
 
