@@ -63,7 +63,11 @@
 
 \author{Chris Pankow}
 \email{chris.pankow@ligo.org}
-\affiliation{Department of Physics, Northwestern University, Milwaukee, WI, 53201, USA}
+\affiliation{Department of Physics, Northwestern University, Evanston, WI, 60208, USA}
+
+\author{Jolien Creighton}
+\email{jolien.creighton@ligo.org}
+\affiliation{Department of Physics, University of Wisconsin-Milwaukee, Milwaukee, WI, 53201, USA}
 
 \author{Other authors}
 \email{authors@email.com}
@@ -105,24 +109,24 @@ Abstract goes here.
 
 \section{Introduction}
 
-The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \cite{Abbott:2016blz, Abbott:2016nmj, TheLIGOScientific:2016pea} have propelled us into the age of gravitational-wave astronomy. Additional gravitational-wave observatories are also expected to come online in in the next several years. With further observation runs scheduled and additional improvements planned for the current LIGO detectors \cite{TheLIGOScientific:2016agk}, the rate at which gravitational waves from compact binary coalescences are observed is expected to increase \cite{Abbott:2016nhf}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
+The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \cite{Abbott:2016blz, Abbott:2016nmj, TheLIGOScientific:2016pea} mark a monumental breakthrough in physics and astronomy. With additional Advanced LIGO observing runs scheduled and further gravitational-wave observatories expected to come online in in the next several years, the age of gravitational-wave astronomy has truly begun. Advanced LIGO's design sensitivity aims to achieve a factor of three improvement to the signal-to-noise ratio (SNR) for binary black hole systems similar to the detected events \cite{TheLIGOScientific:2016agk}. These improvements are expected to increase the inferred rate of observed compact binary coalescences \cite{Abbott:2016nhf}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
 
-Searches for gravitational waves from compact binary coalescences use a technique known as matched-filtering, which involves time-shifting the detector data with template waveforms to calculate their correlations. The template waveforms comprise a template bank, and model the expected signal of gravitational waves from binary neutron stars (BNS), binary black holes (BBH), and neutron star-black hole (NSBH) binaries. Candidate events are identified through matched-filtering, and they are assigned a ranking statistic that assesses their likelihood of being a gravitational-wave signal. 
+Searches for gravitational waves from compact binary coalescences use a technique known as matched-filtering. To search for signals, relatively short gravitational template waveforms are time-shifted across the detector data in order to calculate their correlations. The template waveforms comprise a template bank, and the waveforms model the expected signal of gravitational waves from binary neutron stars (BNS), binary black holes (BBH), and neutron star-black hole (NSBH) binaries. If there is sufficiently high correlation between the data and a template waveform and there is coincidence between the detectors, then an event candidate is identified. Candidate events are assigned a ranking statistic that assesses their likelihood of being a gravitational-wave signal. 
 
-In \cite{2015arXiv150404632C}, Cannon {\it et al.} derived a likelihood-ratio ranking statistic that expands on previous work by Biswas {\it et al.} \cite{Biswas:2012tv} and Aasi {\it et al.} \cite{Aasi:2013vna}, incorporating a model for the correlations in the signal-to-noise-ratios with which signals will be seen in a network of ground-based antennae. The ranking statistic retains an algebraic procedure for mapping ranking statistic values to false-alarm probability. The ranking statistic derived in \cite{2015arXiv150404632C} has been implemented into one of Advanced LIGO's compact binary coalescence gravitational-wave search analyses, GstLaL \cite{Cannon:2011vi,Privitera:2013xza,Messick:2016}.
+In \cite{2015arXiv150404632C}, Cannon {\it et al.} derived a likelihood-ratio ranking statistic that expands on previous work by Biswas {\it et al.} \cite{Biswas:2012tv} and Aasi {\it et al.} \cite{Aasi:2013vna}. Cannon {\it et al.} incorporated a model for the correlations in SNR with which signals will be seen in a network of ground-based antennae. The ranking statistic retains an algebraic procedure for mapping ranking statistic values to false-alarm probability. The ranking statistic derived in \cite{2015arXiv150404632C} has been implemented into one of Advanced LIGO's compact binary coalescence gravitational-wave search analyses, GstLaL \cite{Cannon:2011vi,Privitera:2013xza,Messick:2016}.
 
-Currently, the likelihood ratio-based ranking statistic implemented in GstLaL carries the assumption that gravitational-wave signals are equally likely to be recovered by any waveform template in the template bank. This assumption has been implicitly chosen in past gravitational-wave searches from compact binary coalescences in order to maximize the signal-to-noise ratio (SNR) of the signal, but it carries no astrophysical information from source population models. As a result, compact binary coalescence searches suffer in sensitivity because it assumes an incorrect distribution of compact binaries in the Universe. 
+Currently, the likelihood ratio-based ranking statistic implemented in GstLaL assumes that gravitational-wave signals are equally likely to be recovered by any waveform template in the template bank; that is, the signal population of compact binaries is assumed to follow the placement of the waveforms in the template bank. This has been implicitly chosen in past gravitational-wave searches from compact binary coalescences in order to maximize the SNR of the signal, but it carries no astrophysical information of source population models. As a result, compact binary coalescence searches suffer in sensitivity because it assumes an incorrect distribution of compact binaries in the Universe, which yields an algorithm with less sensitivity of detecting real signals. 
 
-This article presents a derivation that folds in astrophysical source population model information into the ranking statistic. It will also tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
+This article presents a derivation that folds in astrophysical source population model information into the ranking statistic. Implementing the source-dependent ranking statistic allows one to tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
 
-In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j}, \ref{sec:P_k}, and \ref{sec:P_jk}. Finally, in Section \ref{sec:}, we present a discussion of the new ranking statistic, and conclude in Section \ref{sec:conclusion}.
+In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j} and \ref{sec:P_k}. In Section \ref{sec:P_jk}, we present a discussion of the source-dependent ranking statistic, and conclude in Section \ref{sec:conclusion}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Likelihood-ratio ranking statistic} \label{sec:rankingstat}
 
-The ranking statistic employed in one of Advanced LIGO's compact binary coalescence searches, GstLaL, is the likelihood ratio, which is an effective way to rank signals because of the known mapping between the ranking statistic value and false-alarm probability. The likelihood-ratio ranking statistic is given as the following (adapted from Eq. 1 of \cite{2015arXiv150404632C}):
+In one of Advanced LIGO's compact binary coalescence searches, GstLaL, the ranking statistic employed is the likelihood ratio, which is an effective way to rank signals because of the known mapping between the ranking statistic value and false-alarm probability. The likelihood-ratio ranking statistic is given as the following (adapted from Eq. 1 of \cite{2015arXiv150404632C}):
 	\begin{widetext}
 	\begin{multline}
 	\label{eqn:LR}
@@ -152,8 +156,7 @@ We consider a gravitational-wave candidate $\vec{s}$; it belongs to an astrophys
    \end{equation}
 where $m_i$ and $\chi_i$ are the masses and spins, respectively, of source $i=1,2$ and $\rho$ is the nominal SNR. 
 
-We assume that the waveform template bank is densely populated such that the candidate can be described by a template $\vec{t}_j$ in the bank multiplied by $\rho$. Therefore, the candidate is expressed as $\vec{s}(\vec\theta)=\rho\vec{t}_j(\vec\theta)$. The candidate also contains noise $\vec{n}$, which is assumed to be stationary Gaussian noise. To simplify the notation, the dependency on $\vec{\theta}$ is implied from this point on. 
-
+We assume that the waveform template bank is densely populated such that the candidate can be described by a template $\vec{t}_j$ in the bank multiplied by $\rho$. Therefore, the candidate is expressed as $\vec{s}(\vec\theta) \approx \vec{s}(\vec{\theta}_{j}) = \rho\vec{t}_j$. The candidate also contains noise $\vec{n}$, which is assumed to be stationary Gaussian noise. 
 %COORDINATE SYSTEM DRAWING
 \begin{figure}
 \input{unitsphere_figure.tex}
@@ -195,9 +198,9 @@ In the final equality, we assume that the distribution of the source parameters 
 \resizebox{\linewidth}{!}
 {\includegraphics{logPj_OzelrhoNone.png}}
 \resizebox{\linewidth}{!}
-{\includegraphics{logPj_KiziltanrhoNone.png}}
+{\includegraphics{logPj_BBHrhoNone.png}}
+\caption{The logarithmic probability of the signal population, i.e. the probability $P_j$ that a signal $t_j$ exists. Only $m_1$ and $m_2$ of the template bank are plotted. We use two different signal populations: BNS (top) and BBH (bottom). The black solid lines show the mass distribution of the different population models. Note that log$P_j=-\infty$ is not plotted.}
 \label{fig:p_j}
-\caption{log probability of signal population, i.e. the probability $P_j$ that a signal $t_j$ exists. Only $m_1$ and $m_2$ of the template bank are plotted. We use two different signal populations: BNS (left) and BBH (right). The black solid lines show the mass distribution of the different population models. Note that log$P_j=-\infty$ is not plotted.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -284,7 +287,7 @@ The denominator is calculated in the same way. When we compute the full probabil
 
 \FIXME{Replace Kiziltan plots with BBH}
 
-Now that we have derived all components, we can calculate the probability that any signal in our source population is recoverable by a particular template; that is, $P(\vec{t}_k | \text{signal})$ from Eq.~\ref{eqn:prob_signal}.
+Now that we have derived all components, we can calculate the probability that any signal in our source population is recovered by a particular template; that is, $P(\vec{t}_k | \text{signal})$ from Eq.~\ref{eqn:prob_signal}.
 
 In this study, we use the same template bank used by data analysis pipelines during Advanced LIGO's first observation run \cite{TheLIGOScientific:2016pea}. The template bank covers a four-dimensional parameter space ($m_1$,$m_2$,$\chi_1$,$\chi_2$) and is comprised of $\sim\!250,000$ templates. To see the parameter space covered by this template bank, see Fig. 2 of \cite{TheLIGOScientific:2016pea}.
 
@@ -294,7 +297,7 @@ The probabilities currently computed are a function of $\rho$: $P(\text{a signal
 	\end{equation}
 where $n$ is a natural number. 
 
-The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
+The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recovered by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
 
 With a distribution of $\rho$, we can calculate:
 	\begin{equation}
@@ -319,8 +322,8 @@ We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{lagrangian_fit_Ozel.pdf}
 \includegraphics[width=0.5\textwidth]{lagrangian_fit_Kiziltan.pdf}
-\label{fig:Pvsrho}
 \caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for a few templates (top: BNS, bottom: BBH). Dots are the data points, and solid lines are the functions found fitting Lagrangian polynomials to the data \FIXME{(change to cubic splines)}. The $\rho$ values are found using the Chebychev nodes, with the addition of $\rho=0$.}
+\label{fig:Pvsrho}
 \end{figure}
 
 To better understand which templates give asymptotically approach a constant value with increasing $\rho$, in Figure~\ref{fig:P_tkj}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population.
@@ -344,7 +347,7 @@ To better understand which templates give asymptotically approach a constant val
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_P_tkj_100templates_18rho_N3.jpg}}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_P_tkj_100templates_25rho_N3.jpg}}
 	\resizebox{\linewidth}{!}{\includegraphics{first2years_20160612_P_tkj_100templates_37rho_N3.jpg}}
-	\caption{100 templates were chosen at random, for which the probabilities $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recoverable by $\vec{t}_k$})$ of each were calculated; the magnitude of the probability is given by the colour bar. The different plots show the probability calculated for different $\rho$. As $\rho$ is increased, the probability decreases for most templates, indicating that it is unlikely those templates will recover strong signals from our specified population. Some templates have probabilities that remain relatively constant with increasing $\rho$, and these tend to be clustered around the source population. While the colour scale only goes to $10^{-25}$, the probabilities at high $\rho$  go as low as $\sim\!10^{-52}$.}
+	\caption{100 templates were chosen at random, for which the probabilities $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recovered by $\vec{t}_k$})$ of each were calculated; the magnitude of the probability is given by the colour bar. The different plots show the probability calculated for different $\rho$. As $\rho$ is increased, the probability decreases for most templates, indicating that it is unlikely those templates will recover strong signals from our specified population. Some templates have probabilities that remain relatively constant with increasing $\rho$, and these tend to be clustered around the source population. While the colour scale only goes to $10^{-25}$, the probabilities at high $\rho$  go as low as $\sim\!10^{-52}$.}
 	\label{fig:P_tkj}
 	\end{figure}
 \end{comment}
@@ -354,7 +357,7 @@ To better understand which templates give asymptotically approach a constant val
 
 \section{Conclusion} \label{sec:conclusion}
 
-In order to improve the ranking statistic such that it is more sensitive to source populations, we have presented a derivation that enfolds astrophysical source population model information. The population models can be specified and are shown to work for both BNS and BBH populations. This allows gravitational-wave searches to be tuned towards particular sources. We have shown that the probabilities vary between different source populations. This work also demonstrates that low-SNR and high-SNR populations reveal different mass distributions, which makes it important that the ranking statistic incorporates this information. Further work to be done includes using this source-dependent ranking statistic to estimate the rate of compact binary mergers.
+In order to improve the ranking statistic such that it is more sensitive to source populations, we have presented a derivation that enfolds astrophysical source population model information. Furthermore, the population models can be specified and are shown to work for both BNS and BBH populations, offering flexibility of changing the source population model in order to focus gravitational-wave searches towards particular populations. We have shown that the probabilities vary between different source populations. This work also demonstrates that low-SNR and high-SNR populations reveal different mass distributions, which makes it important that the ranking statistic incorporates this information. Further work to be done includes using this source-dependent ranking statistic to estimate the rate of compact binary mergers.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \acknowledgments
