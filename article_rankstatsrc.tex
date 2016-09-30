@@ -119,7 +119,7 @@ Currently, the likelihood ratio-based ranking statistic implemented in GstLaL as
 
 This article presents a derivation that folds in astrophysical source population model information into the ranking statistic. Implementing the source-dependent ranking statistic allows one to tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
 
-In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j} and \ref{sec:P_k}. In Section \ref{sec:P_jk}, we present a discussion of the source-dependent ranking statistic, and conclude in Section \ref{sec:conclusion}.
+In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j} and \ref{sec:P_k}. In Section \ref{sec:P_jk}, we present a discussion of the source-dependent ranking statistic and test it using a BNS and BBH source population model. We conclude in Section \ref{sec:conclusion}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,7 +199,7 @@ In the final equality, we assume that the distribution of the source parameters 
 {\includegraphics{logPj_OzelrhoNone.png}}
 \resizebox{\linewidth}{!}
 {\includegraphics{logPj_BBHrhoNone.png}}
-\caption{The logarithmic probability of the signal population, i.e. the probability $P_j$ that a signal $t_j$ exists. Only $m_1$ and $m_2$ of the template bank are plotted. We use two different signal populations: BNS (top) and BBH (bottom). The black solid lines show the mass distribution of the different population models. Note that log$P_j=-\infty$ is not plotted.}
+\caption{The logarithmic probability of the signal population, i.e. the probability $P_j$ that a signal $t_j$ exists. Only $m_1$ and $m_2$ of the template bank are plotted. We use two different signal populations: BNS (top) and BBH (bottom). The black solid lines show the mass distribution of the different population models. Note log$P_j=-\infty$ is not plotted.}
 \label{fig:p_j}
 \end{figure}
 
@@ -285,8 +285,6 @@ The denominator is calculated in the same way. When we compute the full probabil
 
 \section{$P(\vec{t}_k | \text{signal})$} \label{sec:P_jk}
 
-\FIXME{Replace Kiziltan plots with BBH}
-
 Now that we have derived all components, we can calculate the probability that any signal in our source population is recovered by a particular template; that is, $P(\vec{t}_k | \text{signal})$ from Eq.~\ref{eqn:prob_signal}.
 
 In this study, we use the same template bank used by data analysis pipelines during Advanced LIGO's first observation run \cite{TheLIGOScientific:2016pea}. The template bank covers a four-dimensional parameter space ($m_1$,$m_2$,$\chi_1$,$\chi_2$) and is comprised of $\sim\!250,000$ templates. To see the parameter space covered by this template bank, see Fig. 2 of \cite{TheLIGOScientific:2016pea}.
@@ -295,7 +293,7 @@ The probabilities currently computed are a function of $\rho$: $P(\text{a signal
 	\begin{equation}
 	x_k = \cos\Big(\frac{2k-1}{2n}\pi\Big), \quad k=1,...,n
 	\end{equation}
-where $n$ is a natural number. 
+where $n$ is a natural number. We scale and shift these nodes such that $0\le\rho\le60$.
 
 The probabilities are calculated at different $\rho$ to observe how the recoverability of the templates change with stronger or weaker signals. We plot $P(\text{all $\vec{s}$ in $\mathcal{S}$ is recovered by $\vec{t}_k$})$ vs. $\rho$ in Figure~\ref{fig:Pvsrho} for select templates. Some of the curves have a local maximum at $10\lesssim \rho\lesssim 5$ before asymptotically approaching a constant. This indicates that low-SNR populations will appear to have a different mass distribution than high-SNR populations.
 
@@ -304,29 +302,31 @@ With a distribution of $\rho$, we can calculate:
 	P(\vec{t}_k|\text{signal}) = \int_{\rho_{\text{low}}}^{\rho_{\text{high}}} P(\vec{t}_k|\text{signal},\rho) P(\rho) d\rho
 	\end{equation}
 
-We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of 0 SNR sources at infinite distance. As a result, we pick the lowest SNR to be $\rho_{\text{low}}=4$ as this is the trigger threshold for a gravitational-wave search, and we integrate to $\rho_{\text{high}}=\infty$.
+We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of 0 SNR sources at infinite distance. Instead, we normalize $\rho^{-4}$, from $\rho_{\text{low}}=4$, the trigger threshold for a gravitational-wave search, to $\rho_{\text{high}}=\infty$.
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{logP_Ozelrho0_0.png}
 \includegraphics[width=0.5\textwidth]{logP_Ozelrho16_3802850078.png}
 \includegraphics[width=0.5\textwidth]{logP_Ozelrho51_2132034356.png}
-\caption{$P(\vec{t}_k|\text{signal},\rho)$ for different values of $\rho$ for the BNS source population. The solid black lines denote the mass distribution of the respective source population model.}
+\caption{log($P(\vec{t}_k|\text{signal},\rho)$) for different values of $\rho$ for the BNS source population. The solid black lines denote the mass distribution of the respective source population model.}
+\label{fig:P_tkj_BNS}
 \end{figure}
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{logP_Kiziltanrho0_0.png}
 \includegraphics[width=0.5\textwidth]{logP_Kiziltanrho16_3802850078.png}
 \includegraphics[width=0.5\textwidth]{logP_Kiziltanrho51_2132034356.png}
-\caption{$P(\vec{t}_k|\text{signal},\rho)$ for different values of $\rho$ for the BBH source population. The solid black lines denote the mass distribution of the respective source population model.}
+\caption{log($P(\vec{t}_k|\text{signal},\rho)$) for different values of $\rho$ for the \FIXME{Kiziltan BNS - change to BBH} source population. The solid black lines denote the mass distribution of the respective source population model.}
+\label{fig:P_tkj_BBH}
 \end{figure}
 
 \begin{figure}
 \includegraphics[width=0.5\textwidth]{lagrangian_fit_Ozel.pdf}
 \includegraphics[width=0.5\textwidth]{lagrangian_fit_Kiziltan.pdf}
-\caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for a few templates (top: BNS, bottom: BBH). Dots are the data points, and solid lines are the functions found fitting Lagrangian polynomials to the data \FIXME{(change to cubic splines)}. The $\rho$ values are found using the Chebychev nodes, with the addition of $\rho=0$.}
+\caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for a few templates (top: BNS, bottom: \FIXME{Kiziltan BNS - change to BBH}). Dots are the data points, and solid lines are the functions found using a \FIXME{Lagrangian fit - change to cubic interpolation with increased $\rho$ sampling}. The $\rho$ values are found using the Chebychev nodes, with the addition of $\rho=0$.}
 \label{fig:Pvsrho}
 \end{figure}
 
-To better understand which templates give asymptotically approach a constant value with increasing $\rho$, in Figure~\ref{fig:P_tkj}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population.
+To better understand which templates asymptotically approach a constant value with increasing $\rho$, in Figures~\ref{fig:P_tkj_BNS} and \ref{fig:P_tkj_BBH}, we show the templates mapped onto mass axes, with the colours denoting the magnitude of the calculated logarithmic probability. As $\rho$ increases, we see that the probabilities of most templates exponentially decrease, except for a collection of templates that are clustered around the source population. At high $\rho$, the probability distribution matches that of the source population distribution. This is expected, as for extremely strong signals, it means that the template that recovers the signal must be equal to the signal template itself. However, at low $\rho$, we see that probabilities are high for templates along the line of constant chirp mass. These templates have high overlaps with each other and are also likely to recover signals.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
