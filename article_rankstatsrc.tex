@@ -109,7 +109,7 @@ Abstract goes here.
 
 \section{Introduction}
 
-The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \cite{Abbott:2016blz, Abbott:2016nmj, TheLIGOScientific:2016pea} mark a monumental breakthrough in physics and astronomy. With additional Advanced LIGO observing runs scheduled and further gravitational-wave observatories expected to come online in in the next several years, the age of gravitational-wave astronomy has truly begun. Advanced LIGO's design sensitivity aims to achieve a factor of three improvement to the signal-to-noise ratio (SNR) for binary black hole systems similar to the detected events \cite{TheLIGOScientific:2016agk}. These improvements are expected to increase the inferred rate of observed compact binary coalescences \cite{Abbott:2016nhf}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
+The direct detections of gravitational waves by the Advanced Laser Interferometer Gravitational-wave Observatory (Advanced LIGO) that were made in late 2015 \cite{Abbott:2016blz, Abbott:2016nmj, TheLIGOScientific:2016pea} mark a monumental breakthrough in physics and astronomy. With additional Advanced LIGO observing runs scheduled and further gravitational-wave observatories expected to come online in in the next several years, the age of gravitational-wave astronomy has truly begun. Advanced LIGO's design sensitivity aims to achieve a factor of three improvement to the signal-to-noise ratio (SNR) for binary black hole systems similar to the detected events \cite{TheLIGOScientific:2016agk}, which are expected to increase the inferred rate of observed compact binary coalescences \cite{Abbott:2016nhf}. With additional detections occurring more and more frequently, we stand to gain a deeper understanding of these tumultuous and dramatic astrophysical events. 
 
 Searches for gravitational waves from compact binary coalescences use a technique known as matched-filtering. To search for signals, relatively short gravitational template waveforms are time-shifted across the detector data in order to calculate their correlations. The template waveforms comprise a template bank, and the waveforms model the expected signal of gravitational waves from binary neutron stars (BNS), binary black holes (BBH), and neutron star-black hole (NSBH) binaries. If there is sufficiently high correlation between the data and a template waveform and there is coincidence between the detectors, then an event candidate is identified. Candidate events are assigned a ranking statistic that assesses their likelihood of being a gravitational-wave signal. 
 
@@ -119,7 +119,7 @@ Currently, the likelihood ratio-based ranking statistic implemented in GstLaL as
 
 This article presents a derivation that folds in astrophysical source population model information into the ranking statistic. Implementing the source-dependent ranking statistic allows one to tune compact binary coalescence searches to be more sensitive to a given population, which will improve the accuracy of the rate estimates of observed mergers. 
 
-In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j} and \ref{sec:P_k}. In Section \ref{sec:P_jk}, we present a discussion of the source-dependent ranking statistic and test it using a BNS and BBH source population model. We conclude in Section \ref{sec:conclusion}.
+In Section \ref{sec:rankingstat}, we begin by describing the ranking statistic that is currently used in one of Advanced LIGO's low-latency searches for compact binary coalescences. The derivation of a ranking statistic that envelops astrophysical source model information is outlined in Section \ref{sec:derivation}, where the various terms are explored in further detail in Sections \ref{sec:P_j} and \ref{sec:P_k}. In Section \ref{sec:P_jk}, we present a discussion of the source-dependent ranking statistic and test it using a BNS and BBH source population model. We conclude in Section \ref{sec:conclusion}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,12 +149,12 @@ $P(\vec{\theta}|\text{signal})$ is the probability that a template waveform with
 
 \section{Derivation} \label{sec:derivation}
 
-We consider a gravitational-wave candidate $\vec{s}$; it belongs to an astrophysical source population $\mathcal{S}$ and has parameters $\vec\theta$:
+We consider a gravitational-wave candidate $\vec{s}$; it belongs to an astrophysical source population $\mathcal{S}$ of parameter space dimension $N$. For example, we choose a population that has parameters $\vec\theta$:
    \begin{equation}
    \vec\theta = \{m_1,m_2,\chi_1,\chi_2,\rho\},
    \label{eqn:theta}
    \end{equation}
-where $m_i$ and $\chi_i$ are the masses and spins, respectively, of source $i=1,2$ and $\rho$ is the nominal SNR. 
+where $m_i$ and $\chi_i$ are the masses and spins, respectively, of source $i=1,2$ and $\rho$ is the nominal SNR.
 
 We assume that the waveform template bank is densely populated such that the candidate can be described by a template $\vec{t}_j$ in the bank multiplied by $\rho$. Therefore, the candidate is expressed as $\vec{s}(\vec\theta) \approx \vec{s}(\vec{\theta}_{j}) = \rho\vec{t}_j$. The candidate also contains noise $\vec{n}$, which is assumed to be stationary Gaussian noise. 
 %COORDINATE SYSTEM DRAWING
@@ -185,14 +185,14 @@ From here, we can see there are two parts to this derivation: there is $P(\vec{t
 
 \section{$P(\vec{t}_j|\text{signal})$} \label{sec:P_j}
 
-The first term in the summation of Eq. \ref{eqn:prob_signal} depends on the astrophysical source population model; therefore, a choice must be made for the source population model. In this work, we will consider two models: a binary neutron star (BNS) population and a binary black hole (BBH) population. The BNS source population we used is from Ozel {\it et al.} \cite{Ozel:2012ax}, where neutron star masses are centred around 1.33+1.33$M_\odot$ with a dispersion of 0.05$M_\odot$. For the BBH source population, we take a distribution that is centred around 30+30$M_{\odot}$ with a dispersion of 5$M_\odot$. The population models do not consider the spins of the sources.
+The first term in the summation of Eq. \ref{eqn:prob_signal} depends on the astrophysical source population model; therefore, a choice must be made for the source population model. In this work, we will consider two models: a binary neutron star (BNS) population and a binary black hole (BBH) population. The BNS source population we used is from Ozel {\it et al.} \cite{Ozel:2012ax}, where neutron star masses are Gaussian distributed with a centre around 1.33+1.33$M_\odot$ and a dispersion of 0.05$M_\odot$. For the BBH source population, we assume a Gaussian distribution centred around 30+30$M_{\odot}$ with a dispersion of 5$M_\odot$. The population models do not consider the spins of the sources.
 
-The probability density function (PDF) of the source population is given as $P(\vec{\gamma})$, where $\vec{\gamma}=\{\gamma_1,\gamma_2,..., \gamma_M\}$ are the intrinsic parameters of the source population, such as the masses and spins. The probability of that a signal looks like $\vec{t}_j$ (multiplied by some $\rho$) is the following:
+The probability density function (PDF) of the source population is given as $P(\vec{\gamma})$, where $\vec{\gamma}=\{\gamma_1,\gamma_2,..., \gamma_N\}$ are the intrinsic parameters of the source population, such as the masses and spins. The probability of that a signal looks like $\vec{t}_j$ (multiplied by some $\rho$) is the following:
 	\begin{align}
 	P(\vec{t}_j|\text{signal}) &= \int P_j(\vec{\gamma}) \diff\vec{\gamma} \\
-	&\approx P_j(\gamma_1) P_j(\gamma_2)...P_j(\gamma_M) \times V_j.
+	&\approx P_j(\gamma_1) P_j(\gamma_2)...P_j(\gamma_N) \times V_j.
 	\end{align}
-In the final equality, we assume that the distribution of the source parameters are independent of one another, so the joint probability is the product of the marginals. Because the template bank is made of discrete waveforms, the template bank is turned into a Voronoi diagram, where each template is represented by a Voronoi region.$V_j$ is the $M$-dimensional volume of the $j$th region of the Voronoi diagram, computed using Delaunay triangulation, and it is assumed that $V_j$ is small enough such that $P_j(\gamma_i)$ is constant within the patch. We compute $P(\vec{t}_j|\text{signal})$ for each template in the template bank to find the probability that a system from the given source population will have the same properties as the template. Results for both source populations are shown in Figure \ref{fig:p_j}.
+In the final equality, we assume that the distribution of the source parameters are independent of one another, so the joint probability is the product of the marginals. Because the template bank is made of discrete waveforms, the template bank is turned into a Voronoi diagram, where each template is represented by a Voronoi region. $V_j$ is the $N$-dimensional volume of the $j$th region of the Voronoi diagram, computed using Delaunay triangulation, and it is assumed that $V_j$ is small enough such that $P_j(\gamma_i)$ is constant within the patch. We compute $P(\vec{t}_j|\text{signal})$ for each template in the template bank to find the probability that a system from the given source population will have the same properties as the template. Results for both source populations, BNS and BBH, are shown in Figure \ref{fig:p_j}.
 
 \begin{figure}
 \resizebox{\linewidth}{!}
@@ -280,6 +280,8 @@ The denominator is calculated in the same way. When we compute the full probabil
 	\end{multline}
 	\end{widetext}
 
+Note that when $\ptjtk=0$, both numerator and denominator equal 0, so Eq. \ref{eqn:p_k} goes to 1, which means that the signal is equally likely to be recovered by any template waveform.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -302,27 +304,27 @@ With a distribution of $\rho$, we can calculate:
 	P(\vec{t}_k|\text{signal}) = \int_{\rho_{\text{low}}}^{\rho_{\text{high}}} P(\vec{t}_k|\text{signal},\rho) P(\rho) d\rho
 	\end{equation}
 
-We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of 0 SNR sources at infinite distance. Instead, we normalize $\rho^{-4}$, from $\rho_{\text{low}}=4$, the trigger threshold for a gravitational-wave search, to $\rho_{\text{high}}=\infty$.
+We assume that $P(\rho)\propto\rho^{-4}$. We cannot normalize this because there would be an infinite density of $\rho=0$ sources at infinite distance. Instead, we normalize the above by setting $\rho_{\text{low}}=4$, the trigger threshold for a gravitational-wave search, and $\rho_{\text{high}}=\infty$.
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{logP_Ozelrho0_0.png}
-\includegraphics[width=0.5\textwidth]{logP_Ozelrho16_3802850078.png}
-\includegraphics[width=0.5\textwidth]{logP_Ozelrho51_2132034356.png}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho5_18758277176.png}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho11_6127883904.png}
+\includegraphics[width=0.5\textwidth]{logP_Ozelrho53_7046503713.png}
 \caption{log($P(\vec{t}_k|\text{signal},\rho)$) for different values of $\rho$ for the BNS source population. The solid black lines denote the mass distribution of the respective source population model.}
 \label{fig:P_tkj_BNS}
 \end{figure}
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho0_0.png}
-\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho16_3802850078.png}
-\includegraphics[width=0.5\textwidth]{logP_Kiziltanrho51_2132034356.png}
-\caption{log($P(\vec{t}_k|\text{signal},\rho)$) for different values of $\rho$ for the \FIXME{Kiziltan BNS - change to BBH} source population. The solid black lines denote the mass distribution of the respective source population model.}
+\includegraphics[width=0.5\textwidth]{logP_BBHrho5_18758277176.png}
+\includegraphics[width=0.5\textwidth]{logP_BBHrho11_6127883904.png}
+\includegraphics[width=0.5\textwidth]{logP_BBHrho53_7046503713.png}
+\caption{log($P(\vec{t}_k|\text{signal},\rho)$) for different values of $\rho$ for the BBH source population. The solid black lines denote the mass distribution of the respective source population model.}
 \label{fig:P_tkj_BBH}
 \end{figure}
 
 \begin{figure}
-\includegraphics[width=0.5\textwidth]{lagrangian_fit_Ozel.pdf}
-\includegraphics[width=0.5\textwidth]{lagrangian_fit_Kiziltan.pdf}
-\caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for a few templates (top: BNS, bottom: \FIXME{Kiziltan BNS - change to BBH}). Dots are the data points, and solid lines are the functions found using a \FIXME{Lagrangian fit - change to cubic interpolation with increased $\rho$ sampling}. The $\rho$ values are found using the Chebychev nodes, with the addition of $\rho=0$.}
+\includegraphics[width=0.5\textwidth]{lnP_vs_rho_Ozel.pdf}
+\includegraphics[width=0.5\textwidth]{lnP_vs_rho_BBH.pdf}
+\caption{Lagrangian fits of $P_{jk}$ vs $\rho$ for select templates, which are different for each source population (top: BNS, bottom: BBH). Dots are the data points, and solid lines are the functions fitted with cubic splines. The $\rho$ values are found using the Chebyshev nodes, with the addition of $\rho=0$.}
 \label{fig:Pvsrho}
 \end{figure}
 
@@ -338,7 +340,9 @@ In order to improve the ranking statistic such that it is more sensitive to sour
 %%%%%%%%%%%%%%%%%%%%%%
 \acknowledgments
 
-To be added.
+We are grateful for computational resources provided by the Leonard E Parker
+Center for Gravitation, Cosmology and Astrophysics at University of
+Wisconsin-Milwaukee.
 
 %%%%%%%%%%%%%%%%%%%%%%
 \appendix
